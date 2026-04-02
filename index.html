@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Clippy</title>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  </head>
+  <body>
+    <div id="app">
+      <nav class="navbar" role="navigation" aria-label="main navigation">
+        <a class="navbar-brand" href="/">Clippy</a>
+
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
+          <i id="theme-icon" class="fas fa-moon"></i>
+        </button>
+      </nav>
+
+      <main class="main-content">
+        <div id="welcome-message" style="margin-top: 3rem;">
+          <h1 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Welcome to Clippy!</h1>
+          <p style="color: #64748b;" id="subtext">The lightweight audio trimmer.</p>
+        </div>
+
+        <div id="loading-container" class="loading-container" style="display: none; margin-top: 5rem; width: 80%;">
+          <p class="text-center" style="font-size: 1rem; font-weight: 500;">Loading please wait...</p>
+        </div>
+
+        <div id="waveform-container" class="waveform-container" style="display: none; margin-top: 2rem;">
+          <div id="waveform"></div>
+          <div id="waveform-time" class="waveform-time">0:00 / 0:00</div>
+          
+          <div class="controls mt-4">
+            <button id="play-pause-btn" class="play-btn">
+              <i id="play-pause-icon" class="fas fa-play"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+          <button id="upload-btn" class="upload-btn">
+            <i class="fas fa-upload mr-2"></i>
+            Upload
+          </button>
+          <input type="file" id="audio-input" accept="audio/*" style="display: none;" />
+        </div>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
