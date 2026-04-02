@@ -17,6 +17,14 @@
         </button>
       </nav>
 
+      <!-- Top Toolbar -->
+      <div class="top-toolbar">
+        <button id="upload-btn" class="menu-item">
+          Select File
+        </button>
+        <input type="file" id="audio-input" accept="audio/*" style="display: none;" />
+      </div>
+
       <main class="main-content">
         <div id="welcome-message" style="margin-top: 3rem;">
           <h1 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Welcome to Clippy!</h1>
@@ -37,16 +45,12 @@
             </button>
           </div>
         </div>
-
-        <!-- Toolbar -->
-        <div class="toolbar">
-          <button id="upload-btn" class="upload-btn">
-            <i class="fas fa-upload mr-2"></i>
-            Upload
-          </button>
-          <input type="file" id="audio-input" accept="audio/*" style="display: none;" />
-        </div>
       </main>
+
+      <!-- Bottom Toolbar placeholder -->
+      <div class="bottom-toolbar">
+        <!-- Other UI elements will go here -->
+      </div>
     </div>
 
     <script type="module" src="/src/main.ts"></script>

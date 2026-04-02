@@ -59,7 +59,6 @@ function setupAudioApp() {
   const audioInput = document.getElementById('audio-input') as HTMLInputElement
   const welcomeMessage = document.getElementById('welcome-message')
   const loadingContainer = document.getElementById('loading-container')
-  const progressBarFill = document.getElementById('progress-bar-fill')
   const waveformContainer = document.getElementById('waveform-container')
   const timeDisplay = document.getElementById('waveform-time')
   const playPauseBtn = document.getElementById('play-pause-btn')
@@ -84,13 +83,6 @@ function setupAudioApp() {
       progressColor: colors.progress,
       cursorColor: '#3b82f6',
       height: 128,
-    })
-
-    // Loading progress
-    wavesurfer.on('loading', (percent) => {
-      if (progressBarFill) {
-        progressBarFill.style.width = `${percent}%`
-      }
     })
 
     wavesurfer.on('ready', () => {
@@ -154,7 +146,6 @@ function setupAudioApp() {
       if (waveformContainer) waveformContainer.style.display = 'none'
       if (loadingContainer) {
         loadingContainer.style.display = 'block'
-        if (progressBarFill) progressBarFill.style.width = '0%'
       }
 
       const url = URL.createObjectURL(file)
