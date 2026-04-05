@@ -12,44 +12,143 @@
       <nav class="navbar" role="navigation" aria-label="main navigation">
         <a class="navbar-brand" href="/">Clippy</a>
 
-        <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
-          <i id="theme-icon" class="fas fa-moon"></i>
-        </button>
+        <div class="nav-actions">
+          <button id="upload-btn" class="theme-btn accent-icon" aria-label="Select Audio File" title="Select Audio File">
+            <i class="fas fa-folder-open"></i>
+          </button>
+          <input type="file" id="audio-input" accept="audio/*" style="display: none;" />
+          <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
+            <i id="theme-icon" class="fas fa-moon"></i>
+          </button>
+        </div>
       </nav>
 
-      <!-- Top Toolbar -->
-      <div class="top-toolbar">
-        <button id="upload-btn" class="menu-item">
-          Select File
-        </button>
-        <input type="file" id="audio-input" accept="audio/*" style="display: none;" />
-      </div>
-
       <main class="main-content">
-        <div id="welcome-message" style="margin-top: 3rem;">
-          <h1 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Welcome to Clippy!</h1>
-          <p style="color: #64748b;" id="subtext">The lightweight audio trimmer.</p>
+        <div id="welcome-message" style="margin-top: 5rem; padding: 0 2rem; text-align: center; width: 100%;">
+          <h1 style="font-size: 1.75rem; font-weight: 700; margin-bottom: 1.5rem;">Welcome to Clippy!</h1>
+          <hr class="section-divider" style="width: 40%; margin: 1.5rem auto;" />
+          <p style="color: #64748b; line-height: 1.6; font-size: 1rem; padding-top: 0.5rem; font-weight: 600;">
+            Click the <i class="fas fa-folder-open" style="color: #3b82f6; font-size: 1.25rem; margin: 0 0.25rem;"></i> icon on the top right to select an audio file.
+          </p>
         </div>
 
         <div id="loading-container" class="loading-container" style="display: none; margin-top: 5rem; width: 80%;">
-          <p class="text-center" style="font-size: 1rem; font-weight: 500;">Loading please wait...</p>
+          <p class="text-center" style="font-size: 1rem; font-weight: 600; margin-bottom: 1rem; color: #0369a1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+            Opening <span id="loading-filename"></span>
+          </p>
+          <div class="progress-bar-container">
+            <div id="loading-progress" class="progress-bar-fill"></div>
+          </div>
+          <p class="text-center" style="font-size: 0.75rem; color: #64748b; margin-top: 0.75rem;">
+            Size: <span id="loading-file-size"></span> | Est. Loading Time: <span id="loading-estimate"></span> s
+          </p>
+          <span id="loading-time" style="display: none;"></span>
         </div>
 
-        <div id="waveform-container" class="waveform-container" style="display: none; margin-top: 2rem;">
+        <div id="waveform-container" class="waveform-container" style="display: none; margin-top: 1.5rem;">
           <div id="waveform"></div>
-          <div id="waveform-time" class="waveform-time">0:00 / 0:00</div>
           
-          <div class="controls mt-4">
-            <button id="play-pause-btn" class="play-btn">
-              <i id="play-pause-icon" class="fas fa-play"></i>
+          <div class="track-length-display">
+            <span class="label">Audio Track Length:</span>
+            <span id="track-length" class="length-value">00:00:00:000</span>
+          </div>
+
+          <div id="current-time-display" class="current-time-container">
+            <label for="current-timestamp" class="label">Current Position:</label>
+            <input type="text" id="current-timestamp" class="timestamp-input" value="00:00:00:000" />
+          </div>
+
+          <div class="position-actions-row mt-3">
+            <button id="set-start-btn" class="action-btn secondary-btn flex-1" title="Set Current Position as Start">
+              Set as Start
             </button>
+            <button id="set-end-btn" class="action-btn secondary-btn flex-1" title="Set Current Position as End">
+              Set as End
+            </button>
+          </div>
+          
+          <div class="trim-controls mt-6">
+            <!-- Start Time Section -->
+            <div class="control-section">
+              <div class="label-input-row">
+                <label for="start-time">Start Time</label>
+                <input type="text" id="start-time" placeholder="00:00:00:000" value="00:00:00:000" />
+              </div>
+              <div class="button-row mt-3">
+                <button id="start-minus-1s-btn" class="action-btn secondary-btn" title="-1 Second">
+                  -1 s
+                </button>
+                <button id="start-minus-100ms-btn" class="action-btn secondary-btn" title="-100 Milliseconds">
+                  -100 ms
+                </button>
+                <button id="play-start-btn" class="action-btn toggle-play" title="Play from Start">
+                  <i class="fas fa-play"></i>
+                </button>
+                <button id="start-plus-100ms-btn" class="action-btn secondary-btn" title="+100 Milliseconds">
+                  +100 ms
+                </button>
+                <button id="start-plus-1s-btn" class="action-btn secondary-btn" title="+1 Second">
+                  +1 s
+                </button>
+              </div>
+            </div>
+
+            <hr class="section-divider" />
+
+            <!-- End Time Section -->
+            <div class="control-section">
+              <div class="label-input-row">
+                <label for="end-time">End Time</label>
+                <input type="text" id="end-time" placeholder="00:00:00:000" />
+              </div>
+              <div class="button-row mt-3">
+                <button id="end-minus-1s-btn" class="action-btn secondary-btn" title="-1 Second">
+                  -1 s
+                </button>
+                <button id="end-minus-100ms-btn" class="action-btn secondary-btn" title="-100 Milliseconds">
+                  -100 ms
+                </button>
+                <button id="play-end-btn" class="action-btn toggle-play" title="Play to End">
+                  <i class="fas fa-play"></i>
+                </button>
+                <button id="end-plus-100ms-btn" class="action-btn secondary-btn" title="+100 Milliseconds">
+                  +100 ms
+                </button>
+                <button id="end-plus-1s-btn" class="action-btn secondary-btn" title="+1 Second">
+                  +1 s
+                </button>
+              </div>
+            </div>
+
+            <hr class="section-divider" />
+
+            <!-- Clip Section -->
+            <div class="control-section pb-8">
+              <div class="label-input-row">
+                <label for="clip-name">Clip Name</label>
+                <input type="text" id="clip-name" placeholder="My Clip" value="My Clip" />
+              </div>
+              <div class="button-row mt-3">
+                <button id="clip-btn" class="action-btn clip-action w-full" title="Download Clip">
+                  <i class="fas fa-cut"></i> <span>Download Clip</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </main>
 
-      <!-- Bottom Toolbar placeholder -->
-      <div class="bottom-toolbar">
-        <!-- Other UI elements will go here -->
+      <!-- Error Dialog -->
+      <div id="error-dialog" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+          <h2 class="modal-title">Error</h2>
+          <p id="error-message" class="modal-body">Something went wrong.</p>
+          <div class="modal-footer">
+            <button id="error-close-btn" class="modal-btn">Close</button>
+          </div>
+        </div>
+      </div>
+
       </div>
     </div>
 
