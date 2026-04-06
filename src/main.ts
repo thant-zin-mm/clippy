@@ -456,10 +456,15 @@ function setupAudioApp() {
     })
 
     wavesurfer.on('timeupdate', (currentTime) => {
+      if (!wavesurfer) return
+      // Use getCurrentTime() to get the most up-to-date position, 
+      // as the currentTime argument can be stale immediately after setTime().
+      const currentPos = wavesurfer.getCurrentTime()
+
       if (currentTimestampInput && document.activeElement !== currentTimestampInput) {
-        currentTimestampInput.value = formatTimeWithMs(currentTime)
+        currentTimestampInput.value = formatTimeWithMs(currentPos)
       }
-      if (wavesurfer?.isPlaying() && currentTime >= stopTime) {
+      if (wavesurfer.isPlaying() && activePreview && currentPos >= stopTime) {
         wavesurfer.pause()
       }
     })
@@ -496,8 +501,6 @@ function setupAudioApp() {
         activePreview = null
         updatePlayIcons(false)
         return
-      } else {
-        wavesurfer.pause()
       }
     }
 
