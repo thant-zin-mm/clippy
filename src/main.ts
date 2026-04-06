@@ -235,6 +235,10 @@ function setupAudioApp() {
 
   const clipBtn = document.getElementById('clip-btn')
   
+  const helpBtn = document.getElementById('help-btn')
+  const helpModal = document.getElementById('help-modal')
+  const helpCloseBtn = document.getElementById('help-close-btn')
+
   const errorDialog = document.getElementById('error-dialog')
   const errorMessage = document.getElementById('error-message')
   const errorCloseBtn = document.getElementById('error-close-btn')
@@ -264,6 +268,14 @@ function setupAudioApp() {
 
   errorCloseBtn?.addEventListener('click', () => {
     if (errorDialog) errorDialog.style.display = 'none'
+  })
+
+  helpBtn?.addEventListener('click', () => {
+    if (helpModal) helpModal.style.display = 'flex'
+  })
+
+  helpCloseBtn?.addEventListener('click', () => {
+    if (helpModal) helpModal.style.display = 'none'
   })
 
   const validateInputs = (isManual: boolean) => {

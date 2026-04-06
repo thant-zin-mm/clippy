@@ -17,6 +17,9 @@
             <i class="fas fa-folder-open"></i>
           </button>
           <input type="file" id="audio-input" accept="audio/*" style="display: none;" />
+          <button id="help-btn" class="theme-btn" aria-label="Show User Guide" title="User Guide">
+            <i class="fas fa-question-circle"></i>
+          </button>
           <button id="theme-toggle" class="theme-btn" aria-label="Toggle Dark Mode">
             <i id="theme-icon" class="fas fa-moon"></i>
           </button>
@@ -48,95 +51,125 @@
         <div id="waveform-container" class="waveform-container" style="display: none; margin-top: 1.5rem;">
           <div id="waveform"></div>
           
-          <div class="track-length-display">
-            <span class="label">Audio Track Length:</span>
-            <span id="track-length" class="length-value">00:00:00:000</span>
+          <!-- Unified Info Bar -->
+          <div class="info-bar mt-4">
+            <div class="info-item">
+              <span class="info-label">Pos:</span>
+              <input type="text" id="current-timestamp" class="info-input" value="00:00:00:000" title="Current Playhead Position" />
+            </div>
+            <div class="info-divider">/</div>
+            <div class="info-item">
+              <span class="info-label">Len:</span>
+              <span id="track-length" class="info-value">00:00:00:000</span>
+            </div>
           </div>
 
-          <div id="current-time-display" class="current-time-container">
-            <label for="current-timestamp" class="label">Current Position:</label>
-            <input type="text" id="current-timestamp" class="timestamp-input" value="00:00:00:000" />
-          </div>
-
-          <div class="position-actions-row mt-3">
-            <button id="set-start-btn" class="action-btn secondary-btn flex-1" title="Set Current Position as Start">
-              Set as Start
-            </button>
-            <button id="set-end-btn" class="action-btn secondary-btn flex-1" title="Set Current Position as End">
-              Set as End
-            </button>
-          </div>
-          
-          <div class="trim-controls mt-6">
-            <!-- Start Time Section -->
-            <div class="control-section">
-              <div class="label-input-row">
-                <label for="start-time">Start Time</label>
-                <input type="text" id="start-time" placeholder="00:00:00:000" value="00:00:00:000" />
+          <!-- Control Cards Grid -->
+          <div class="trim-grid mt-6">
+            <!-- Start Point Card -->
+            <div class="control-card">
+              <div class="card-header">
+                <span class="card-title"><i class="fas fa-play-circle"></i> Start Point</span>
+                <div class="input-group">
+                  <input type="text" id="start-time" class="card-input" value="00:00:00:000" />
+                  <button id="set-start-btn" class="icon-btn" title="Capture Current Position"><i class="fas fa-thumbtack"></i></button>
+                </div>
               </div>
-              <div class="button-row mt-3">
-                <button id="start-minus-1s-btn" class="action-btn secondary-btn" title="-1 Second">
-                  -1 s
-                </button>
-                <button id="start-minus-100ms-btn" class="action-btn secondary-btn" title="-100 Milliseconds">
-                  -100 ms
-                </button>
-                <button id="play-start-btn" class="action-btn toggle-play" title="Play from Start">
-                  <i class="fas fa-play"></i>
-                </button>
-                <button id="start-plus-100ms-btn" class="action-btn secondary-btn" title="+100 Milliseconds">
-                  +100 ms
-                </button>
-                <button id="start-plus-1s-btn" class="action-btn secondary-btn" title="+1 Second">
-                  +1 s
-                </button>
+              <div class="card-actions">
+                <button id="start-minus-1s-btn" class="step-btn" title="-1s"><i class="fas fa-angle-double-left"></i></button>
+                <button id="start-minus-100ms-btn" class="step-btn" title="-100ms"><i class="fas fa-angle-left"></i></button>
+                <button id="play-start-btn" class="play-preview-btn toggle-play" title="Preview from Start"><i class="fas fa-play"></i></button>
+                <button id="start-plus-100ms-btn" class="step-btn" title="+100ms"><i class="fas fa-angle-right"></i></button>
+                <button id="start-plus-1s-btn" class="step-btn" title="+1s"><i class="fas fa-angle-double-right"></i></button>
               </div>
             </div>
 
-            <hr class="section-divider" />
-
-            <!-- End Time Section -->
-            <div class="control-section">
-              <div class="label-input-row">
-                <label for="end-time">End Time</label>
-                <input type="text" id="end-time" placeholder="00:00:00:000" />
+            <!-- End Point Card -->
+            <div class="control-card mt-4">
+              <div class="card-header">
+                <span class="card-title"><i class="fas fa-stop-circle"></i> End Point</span>
+                <div class="input-group">
+                  <input type="text" id="end-time" class="card-input" value="00:00:00:000" />
+                  <button id="set-end-btn" class="icon-btn" title="Capture Current Position"><i class="fas fa-thumbtack"></i></button>
+                </div>
               </div>
-              <div class="button-row mt-3">
-                <button id="end-minus-1s-btn" class="action-btn secondary-btn" title="-1 Second">
-                  -1 s
-                </button>
-                <button id="end-minus-100ms-btn" class="action-btn secondary-btn" title="-100 Milliseconds">
-                  -100 ms
-                </button>
-                <button id="play-end-btn" class="action-btn toggle-play" title="Play to End">
-                  <i class="fas fa-play"></i>
-                </button>
-                <button id="end-plus-100ms-btn" class="action-btn secondary-btn" title="+100 Milliseconds">
-                  +100 ms
-                </button>
-                <button id="end-plus-1s-btn" class="action-btn secondary-btn" title="+1 Second">
-                  +1 s
-                </button>
+              <div class="card-actions">
+                <button id="end-minus-1s-btn" class="step-btn" title="-1s"><i class="fas fa-angle-double-left"></i></button>
+                <button id="end-minus-100ms-btn" class="step-btn" title="-100ms"><i class="fas fa-angle-left"></i></button>
+                <button id="play-end-btn" class="play-preview-btn toggle-play" title="Preview End"><i class="fas fa-play"></i></button>
+                <button id="end-plus-100ms-btn" class="step-btn" title="+100ms"><i class="fas fa-angle-right"></i></button>
+                <button id="end-plus-1s-btn" class="step-btn" title="+1s"><i class="fas fa-angle-double-right"></i></button>
               </div>
             </div>
+          </div>
 
-            <hr class="section-divider" />
-
-            <!-- Clip Section -->
-            <div class="control-section pb-8">
-              <div class="label-input-row">
-                <label for="clip-name">Clip Name</label>
-                <input type="text" id="clip-name" placeholder="My Clip" value="My Clip" />
+          <!-- Export Section -->
+          <div class="export-area mt-8 pb-10">
+            <div class="export-card">
+              <div class="export-input-wrapper">
+                <i class="fas fa-file-signature export-icon"></i>
+                <input type="text" id="clip-name" placeholder="Name your clip" value="My Clip" />
               </div>
-              <div class="button-row mt-3">
-                <button id="clip-btn" class="action-btn clip-action w-full" title="Download Clip">
-                  <i class="fas fa-cut"></i> <span>Download Clip</span>
-                </button>
-              </div>
+              <button id="clip-btn" class="primary-action-btn mt-4">
+                <i class="fas fa-file-audio"></i> Download Clip
+              </button>
             </div>
           </div>
         </div>
       </main>
+
+      <!-- Help Modal -->
+      <div id="help-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content help-content">
+          <div class="modal-header">
+            <h2 class="modal-title info-title">User Guide</h2>
+            <button id="help-close-btn" class="close-icon-btn"><i class="fas fa-times"></i></button>
+          </div>
+          <div class="modal-body">
+            <!-- Getting Started -->
+            <div class="guide-section">
+              <h3 class="guide-header"><i class="fas fa-rocket"></i> Getting Started</h3>
+              <div class="guide-item">
+                <span class="guide-item-title"><i class="fas fa-folder-open guide-icon"></i> Select File</span>
+                <p class="guide-text">Click the accented folder icon in the top right to load an audio file from your device.</p>
+              </div>
+            </div>
+
+            <!-- Precision Trimming -->
+            <div class="guide-section">
+              <h3 class="guide-header"><i class="fas fa-cut"></i> Precision Trimming</h3>
+              <div class="guide-item">
+                <span class="guide-item-title"><i class="fas fa-thumbtack guide-icon"></i> Capture (Pin)</span>
+                <p class="guide-text">Click the thumbtack icon next to Start or End points to instantly set them to the current playhead position.</p>
+              </div>
+              <div class="guide-item">
+                <span class="guide-item-title"><i class="fas fa-history guide-icon"></i> Fine-Tuning</span>
+                <p class="guide-text">Use <span class="guide-highlight">« / »</span> to jump 1 second, and <span class="guide-highlight">‹ / ›</span> to adjust by 100ms for frame-perfect cuts.</p>
+              </div>
+              <div class="guide-item">
+                <span class="guide-item-title"><i class="fas fa-play guide-icon"></i> Focused Previews</span>
+                <p class="guide-text">Each card has a play button. The <span class="guide-highlight">End Point</span> preview plays only the last 2 seconds of your clip for a quick check.</p>
+              </div>
+            </div>
+
+            <!-- Validation -->
+            <div class="guide-section">
+              <h3 class="guide-header"><i class="fas fa-exclamation-triangle"></i> Validation</h3>
+              <div class="guide-item">
+                <p class="guide-text">If an input field turns <span style="color: #ef4444; font-weight: 700;">RED</span>, it means the time is invalid (e.g., exceeds track length or Start is after End).</p>
+              </div>
+            </div>
+
+            <!-- Export -->
+            <div class="guide-section">
+              <h3 class="guide-header"><i class="fas fa-file-download"></i> Saving</h3>
+              <div class="guide-item">
+                <p class="guide-text">Give your clip a name and hit <span class="guide-highlight">Download Clip</span>. Your high-quality WAV file will be generated instantly in your browser.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <!-- Error Dialog -->
       <div id="error-dialog" class="modal-overlay" style="display: none;">
