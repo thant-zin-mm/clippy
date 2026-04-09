@@ -37,6 +37,8 @@ Clippy is a lightweight client-side application designed to play and trim audio 
 - [x] Add visual input validation (red status cues)
 - [x] Implement scrollable User Guide modal
 - [x] Apply professional skyblue/cyan dashboard aesthetic
+- [x] Fix: Start/End preview toggle state when switching modes
+- [x] Fix: Premature pause when replaying previews after completion
 
 ## TODO
 - [ ] Implement multi-segment selection?
