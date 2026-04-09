@@ -455,7 +455,7 @@ function setupAudioApp() {
       updatePlayIcons(false)
     })
 
-    wavesurfer.on('timeupdate', (currentTime) => {
+    wavesurfer.on('timeupdate', () => {
       if (!wavesurfer) return
       // Use getCurrentTime() to get the most up-to-date position, 
       // as the currentTime argument can be stale immediately after setTime().
