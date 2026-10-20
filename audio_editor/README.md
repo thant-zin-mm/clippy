@@ -29,7 +29,7 @@ Mirrors the task statuses in [`docs/plan.md`](docs/plan.md) — **always update 
 
 | Phase | Task | Status |
 |---|---|---|
-| 0 · Setup | P0-T1 — Repository scaffold, health check, CI | under review |
+| 0 · Setup | P0-T1 — Repository scaffold, health check, CI | done |
 | 1 · Vertical slice | P1-T1 — Backend: upload + prepare pipeline | not started |
 | 1 · Vertical slice | P1-T2 — Frontend: import flow + waveform + ruler + zoom/pan | not started |
 | 1 · Vertical slice | P1-T3 — 🔒 Spike gate: measured real-file validation | not started |
