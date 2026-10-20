@@ -42,7 +42,7 @@ _(The coder workflow uses `under review` for code awaiting the user's review pas
 **Exit criteria:** P1-T1…P1-T6 all `done`, **including the P1-T3 measured gate**; a real long file can be imported, auto-detected, reviewed by clicking, manually cut, and heard with cuts applied (export comes in Phase 2).
 
 ### P1-T1 — Backend: upload + prepare pipeline
-**Status:** `under review`
+**Status:** `done`
 
 **Do:**
 - `POST /api/sources`: streamed multipart → temp file (`silence-cutter-*`), size guard (default 4 GB), returns `{source_id}`; `DELETE /api/sources/{id}` removes file + caches.
