@@ -1,0 +1,58 @@
+name: audio-editor-ci
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'audio_editor/**'
+      - '.github/workflows/audio-editor-ci.yml'
+  pull_request:
+    paths:
+      - 'audio_editor/**'
+      - '.github/workflows/audio-editor-ci.yml'
+
+jobs:
+  backend:
+    name: backend (rust)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: audio_editor/backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: audio_editor/backend
+      - name: rustfmt
+        run: cargo fmt --check
+      - name: clippy
+        run: cargo clippy --all-targets -- -D warnings
+      - name: tests
+        run: cargo test
+
+  frontend:
+    name: frontend (ts)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: audio_editor/frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: audio_editor/frontend/package-lock.json
+      - name: install
+        run: npm ci
+      - name: lint
+        run: npm run lint
+      - name: format
+        run: npm run format:check
+      - name: typecheck
+        run: npm run typecheck
+      - name: tests
+        run: npm test

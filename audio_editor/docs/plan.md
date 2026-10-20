@@ -1,11 +1,12 @@
 # plan.md — Implementation Plan
 
-_Step 4 of the Idea → Documentation workflow (see `../todo.md`). Status: awaiting review._
+_Step 4 of the Idea → Documentation workflow (see `../todo.md`). Status: approved; implementation in progress._
 _Build strategy: **vertical slice first**, with an **early measured spike gate** on a real long file; **coarse tasks** (~one focused session each); **CI + Playwright committed for v1**._
 
 **How to use this plan:** work phases in order; within a phase, tasks in order. A task is only `done` when its acceptance criteria are verified and testing notes executed; then update its `status` **and** the progress table in `README.md` (Ground Rule: README stays in sync). If reality forces a design change, stop, propose the document update to the user (per `coding-guide.md`), don't silently deviate.
 
-**Status legend:** `not started` / `in progress` / `blocked` / `done`
+**Status legend:** `not started` / `in progress` / `under review` / `blocked` / `done`
+_(The coder workflow uses `under review` for code awaiting the user's review pass; it is an interim value between `in progress` and `done`.)_
 
 ---
 
@@ -16,7 +17,7 @@ _Build strategy: **vertical slice first**, with an **early measured spike gate**
 **Exit criteria:** two documented commands start backend + frontend; opening the UI shows a live "backend connected" badge; CI workflow runs fmt/clippy/tsc/eslint/tests green on push.
 
 ### P0-T1 — Repository scaffold, health check, CI
-**Status:** `not started`
+**Status:** `done`
 
 **Do:**
 - Create structure per `architecture.md` §11: `backend/` (Rust crate: axum, tokio, serde, tower-http CORS; `GET /api/health` returning `{ok, version}`; env config `SILENCE_CUTTER_ADDR` default `127.0.0.1:7817`, `SILENCE_CUTTER_ORIGINS`; graceful shutdown; startup temp sweep stub) and `frontend/` (Vite + TS, ESLint + Prettier, base HTML/CSS, api client with `VITE_API_BASE` default `http://127.0.0.1:7817`, health-check badge).
