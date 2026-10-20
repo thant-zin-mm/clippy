@@ -34,7 +34,7 @@ _This guide binds every human or AI agent implementing **Silence Cutter** v1._
 
 ## 4. Stack & dependencies
 
-- Use **exactly** the stack in `architecture.md` §2 (Rust/axum/tokio/symphonia/hound/lame-sys/rayon; Vite/TS/no-framework; custom canvas). 
+- Use **exactly** the stack in `architecture.md` §2 (Rust/axum/tokio/symphonia/hound/mp3lame-encoder/rayon; Vite/TS/no-framework; custom canvas). 
 - **No new dependency** without a PR-note justification (why existing deps can't do it) and, if it changes the stack table, user approval of the doc edit.
 - Keep the frontend dependency count near-zero; anything added must be small, maintained, and license-compatible with GPL-3.0 (NFR-9).
 - Keep the backend dependency tree boring; prefer std/`tokio`/`axum`-ecosystem solutions.

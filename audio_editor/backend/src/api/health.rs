@@ -4,7 +4,7 @@ use axum::extract::State;
 use axum::Json;
 use serde::Serialize;
 
-use crate::state::AppState;
+use crate::api::Shared;
 
 #[derive(Debug, Serialize)]
 pub struct HealthResponse {
@@ -12,7 +12,7 @@ pub struct HealthResponse {
     pub version: String,
 }
 
-pub async fn handler(State(_state): State<AppState>) -> Json<HealthResponse> {
+pub async fn handler(State(_state): State<Shared>) -> Json<HealthResponse> {
     Json(HealthResponse {
         ok: true,
         version: env!("CARGO_PKG_VERSION").to_owned(),

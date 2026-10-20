@@ -50,7 +50,7 @@ flowchart LR
 | HTTP framework | **axum + tokio** (D23) | De-facto standard, tower middleware (CORS, limits), first-class SSE/streaming, easy extractors for multipart/binary responses | actix-web (actor model, more moving parts), hand-rolled hyper (reinvents routing), tiny_http (no async/SSE ergonomics) |
 | MP3/WAV decode | **symphonia** (pure Rust) | Supports MP3 + WAV (our exact scope, D2), streaming decode without holding full PCM, no system deps | ffmpeg CLI (external process + install requirement), rusty_ffmpeg (binding maintenance) |
 | WAV export | **hound** | Tiny, well-maintained writer for PCM WAV | Hand-rolled RIFF writer (trivial but pointless), symphonia write support is not a thing |
-| MP3 export | **lame-sys** (libmp3lame bindings) | Battle-tested encoder; GPL-compatible (fits D18 GPL-3.0); we already require a C toolchain (D21) | `shine` (fixed-point, lower quality), ffmpeg CLI (external dep), pure-Rust encoders (immature quality) |
+| MP3 export | **mp3lame-encoder** (binds the vendored lame-3.100; static, no system lib — replaces the earlier `lame-sys` dynamic-link plan) | Battle-tested encoder; LGPL-3.0 GPL-compatible (fits D18 GPL-3.0, see dependency-licenses.md); we already require a C toolchain (D21) | `shine` (fixed-point, lower quality), ffmpeg CLI (external dep), pure-Rust encoders (immature quality), `lame-sys` (needs system `-lmp3lame`, unavailable) |
 | Analysis parallelism | **rayon** over the frame loop + `spawn_blocking` for jobs | CPU-bound passes parallelize cleanly; keeps tokio reactor free | doing CPU work on async threads (blocks I/O) |
 | Frontend build | **Vite + TypeScript, no framework** (D25) | One-page tool; native `<canvas>`/state store is less code than framework plumbing; fewer deps for OSS review | React/Vue/Svelte (bundle + concept overhead for a single view) |
 | Waveform | **Custom canvas renderer** fed by backend peaks (D26) | Full control over cut overlays/selection/zoom at 500+ candidates; no impedance with our cut model | wavesurfer.js (DOM regions perf at scale — background R6; its own playback model conflicts with D24) |
@@ -71,7 +71,7 @@ flowchart LR
 | `audio::decode` | Streaming symphonia decode over a source file; yields PCM chunks; used by prepare, detect (indirectly — frames are computed at prepare time), and export. |
 | `audio::peaks` | Builds the multi-resolution peak pyramid (§4.4) during prepare; serves windowed min/max queries for any zoom. |
 | `audio::frames` | During prepare, computes 10 ms frames: `peak_db` (max abs across channels) and `rms_db` — stored as `Vec<f32>` (~4.3 MB each for 4 h) for instant re-detect and noise-floor suggestion. |
-| `audio::export` | Assembles the edited timeline from the client's cut list: merge/validate spans, stream kept segments with 5 ms fades at joins, write WAV (hound) or MP3 (lame-sys, 192 kbps CBR; resample to 48 kHz if source rate unsupported by MP3). |
+| `audio::export` | Assembles the edited timeline from the client's cut list: merge/validate spans, stream kept segments with 5 ms fades at joins, write WAV (hound) or MP3 (mp3lame-encoder, 192 kbps CBR; resample to 48 kHz if source rate unsupported by MP3). |
 | `analysis` | Threshold + min-duration run-length scan over cached `peak_db` frames → candidate list; noise-floor percentile + 12 dB suggestion (computed once at prepare). Pure function of `(frames, threshold, min_duration)` → trivially unit-testable. |
 | `error` | Typed error enum; user-facing message + hint (FR-21); never leak internal paths/stack traces to the client. |
 
@@ -211,7 +211,7 @@ Also: the frontend fires `navigator.sendBeacon(DELETE, /api/sources/{id})` on `p
 - **Local trust model (v1):** no auth; loopback binding + CORS allowlist is the boundary. Explicitly documented as insufficient for cloud mode (open question §12).
 - **Privacy (NFR-3):** no telemetry/analytics/CDN; audio bytes go only to the configured API; temp files in an OS-private temp dir, unique prefix `silence-cutter-*`, deleted on source delete/shutdown and swept at startup; export files stream to the browser's download location only.
 - **Input handling:** the server never accepts filesystem paths from clients — only uploaded bytes (eliminates path traversal); filename from client used only for sanitized `Content-Disposition` (ASCII fallback + RFC 5987 UTF-8); upload size guard (configurable, default 4 GB); JSON body limits.
-- **License compliance (NFR-9):** GPL-3.0 for our code; dependency audit in plan (must be GPL-compatible: symphonia MPL-2.0? — **verify MPL-2.0 files-level obligations at plan time**, hound MIT, axum/tokio MIT, lame-sys LGPL — linking from a GPL app is fine).
+- **License compliance (NFR-9):** GPL-3.0 for our code; dependency audit in plan (must be GPL-compatible: symphonia MPL-2.0? — **verify MPL-2.0 files-level obligations at plan time**, hound MIT, axum/tokio MIT, mp3lame-encoder LGPL-3.0 — linking from a GPL app is fine; obligations tracked in dependency-licenses.md).
 - **No secrets, no accounts** — nothing to manage.
 
 ## 8. Performance, reliability, scalability

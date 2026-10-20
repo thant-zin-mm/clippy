@@ -1,6 +1,11 @@
 //! HTTP API surface (arch §6). Route modules grow per plan task.
 
 mod health;
+mod jobs;
+mod sources;
+
+use std::sync::Arc;
+use std::time::Duration;
 
 use axum::http::{header, Method, Request};
 use axum::routing::get;
@@ -11,16 +16,57 @@ use tracing::warn;
 
 use crate::config::{Config, DEFAULT_ORIGINS};
 use crate::error::ApiError;
+use crate::jobs::JobManager;
 use crate::state::AppState;
 
-/// Build the application router (stateful, CORS-configured).
+/// Shared axum state carried by every handler: registry + config + job manager.
+pub type Shared = (AppState, Config, JobManager);
+
+/// Upper bound on the upload request body (arch §6, PRD upload size guard).
+/// The per-process cap is additionally enforced while streaming the multipart
+/// body so a large upload never gets fully buffered before we can reject it.
+pub const UPLOAD_BODY_LIMIT_BYTES: usize = 4 * 1024 * 1024 * 1024;
+
+/// Build the application router (stateful, CORS-configured, job worker spawned).
 pub fn router(config: Config) -> Router {
+    let state = AppState::new();
+    let jobs = JobManager::new(state.clone());
+
+    // Global serial worker: prepares run off the async runtime.
+    Arc::new(jobs.clone()).spawn_worker();
+
+    // Periodic idle TTL sweep so sources whose tabs vanished without DELETE
+    // do not leak temp files (arch §3.1).
+    spawn_idle_sweeper(state.clone(), Duration::from_secs(config.tmp_ttl_secs));
+
+    build_router_with_state(state, config, jobs)
+}
+
+/// Build the router from an existing shared state (used by tests).
+pub fn build_router_with_state(state: AppState, config: Config, jobs: JobManager) -> Router {
     let cors = build_cors(&config);
+    let shared: Shared = (state, config, jobs);
+
     Router::new()
         .route("/api/health", get(health::handler))
+        .nest("/api/sources", sources::routes())
+        .nest("/api/jobs", jobs::routes())
         .fallback(fallback_404)
+        .layer(axum::extract::DefaultBodyLimit::max(
+            UPLOAD_BODY_LIMIT_BYTES,
+        ))
         .layer(cors)
-        .with_state(AppState)
+        .with_state::<()>(shared)
+}
+
+fn spawn_idle_sweeper(state: AppState, ttl: Duration) {
+    std::thread::spawn(move || loop {
+        std::thread::sleep(Duration::from_secs(60));
+        let removed = state.sweep_idle(ttl);
+        if !removed.is_empty() {
+            tracing::info!(count = removed.len(), "idle sweep removed stale sources");
+        }
+    });
 }
 
 /// Explicit-origin CORS layer. Never `*`: the coding guide forbids an open
