@@ -2,7 +2,7 @@
 
 A minimal, local-first audio editor for very long spoken-word recordings (2–4 hour community discussions, panels, lectures). Drop in an MP3 or WAV file, review auto-detected silences on a zoomable waveform, accept/reject each candidate with a click, make manual cuts, and export a tightened WAV or MP3 — with no cloud upload, no accounts, and no Audacity learning curve.
 
-**Status: implementation in progress (Phase 0 scaffold complete, under review).** All product/technical documentation is complete and approved (Oct 2026); see the [progress tracker](#progress-tracker) below. The app is two fully separate deployables (D20): a static TypeScript frontend and a local Rust backend that owns all decoding, analysis, and export. Audio never leaves your machine in v1.
+**Status: implementation in progress (P0-T1 scaffold done; P1-T1 backend pipeline under review).** All product/technical documentation is complete and approved (Oct 2026); see the [progress tracker](#progress-tracker) below. The app is two fully separate deployables (D20): a static TypeScript frontend and a local Rust backend that owns all decoding, analysis, and export. Audio never leaves your machine in v1.
 
 - License: [GPL-3.0](LICENSE)
 - Audience: open-source; source-build only for v1 (release binaries post-v1)
@@ -30,7 +30,7 @@ Mirrors the task statuses in [`docs/plan.md`](docs/plan.md) — **always update 
 | Phase | Task | Status |
 |---|---|---|
 | 0 · Setup | P0-T1 — Repository scaffold, health check, CI | done |
-| 1 · Vertical slice | P1-T1 — Backend: upload + prepare pipeline | not started |
+| 1 · Vertical slice | P1-T1 — Backend: upload + prepare pipeline | under review |
 | 1 · Vertical slice | P1-T2 — Frontend: import flow + waveform + ruler + zoom/pan | not started |
 | 1 · Vertical slice | P1-T3 — 🔒 Spike gate: measured real-file validation | not started |
 | 1 · Vertical slice | P1-T4 — Detection end-to-end | not started |

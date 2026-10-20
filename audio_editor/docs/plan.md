@@ -42,7 +42,7 @@ _(The coder workflow uses `under review` for code awaiting the user's review pas
 **Exit criteria:** P1-T1…P1-T6 all `done`, **including the P1-T3 measured gate**; a real long file can be imported, auto-detected, reviewed by clicking, manually cut, and heard with cuts applied (export comes in Phase 2).
 
 ### P1-T1 — Backend: upload + prepare pipeline
-**Status:** `not started`
+**Status:** `under review`
 
 **Do:**
 - `POST /api/sources`: streamed multipart → temp file (`silence-cutter-*`), size guard (default 4 GB), returns `{source_id}`; `DELETE /api/sources/{id}` removes file + caches.
@@ -153,7 +153,7 @@ _(The coder workflow uses `under review` for code awaiting the user's review pas
 **Status:** `not started`
 
 **Do:**
-- Backend: `POST /api/sources/{id}/exports {format, filename_hint, cuts[]}` → job (validate: bounds, ordering, non-empty after merge; defensive re-merge per §4.5); streaming export: re-decode source → copy kept segments → **5 ms linear fades** at every kept-segment edge bordering a removed span → WAV (hound, source rate/channels, 16-bit or 24-bit per A2) or MP3 (lame-sys, 192 kbps CBR per A1/D33, resample to 48 kHz only if source rate unsupported); write to temp output; SSE `done {export_id, filename}`; `GET /api/exports/{id}/download` streamed with safe `Content-Disposition`; cancel via job delete (best-effort).
+- Backend: `POST /api/sources/{id}/exports {format, filename_hint, cuts[]}` → job (validate: bounds, ordering, non-empty after merge; defensive re-merge per §4.5); streaming export: re-decode source → copy kept segments → **5 ms linear fades** at every kept-segment edge bordering a removed span → WAV (hound, source rate/channels, 16-bit or 24-bit per A2) or MP3 (mp3lame-encoder, 192 kbps CBR per A1/D33, resample to 48 kHz only if source rate unsupported); write to temp output; SSE `done {export_id, filename}`; `GET /api/exports/{id}/download` streamed with safe `Content-Disposition`; cancel via job delete (best-effort).
 - Frontend: export dialog (format choice, live result duration from `cutModel`, expected time-removed), progress via SSE, auto/manual download on done, error toasts (disk full, etc.).
 - Ensure original file untouched semantics hold (server only has its uploaded copy) and session restart loses nothing already exported.
 

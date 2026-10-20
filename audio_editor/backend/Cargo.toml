@@ -7,10 +7,16 @@ description = "Local backend for Silence Cutter: audio decode, silence detection
 publish = false
 
 [dependencies]
-axum = "0.8"
+axum = { version = "0.8", features = ["multipart"] }
+async-stream = "0.3"
+futures-util = { version = "0.3", default-features = false }
 http = "1"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+serde_urlencoded = "0.7"
+symphonia = { version = "0.6.1", default-features = false, features = ["mp3", "wav", "pcm"] }
+symphonia-bundle-mp3 = "0.6.1"
+mp3lame-encoder = "0.2"
 thiserror = "2"
 tokio = { version = "1", features = ["macros", "rt-multi-thread", "signal", "net"] }
 tower-http = { version = "0.6", features = ["cors"] }
@@ -19,6 +25,8 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 [dev-dependencies]
 http-body-util = "0.1"
+reqwest = { version = "0.12", features = ["json", "stream", "multipart"] }
+tokio = { version = "1", features = ["macros", "rt-multi-thread", "net", "io-util", "time"] }
 tower = { version = "0.5", features = ["util"] }
 
 [lints.rust]
